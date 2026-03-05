@@ -5,15 +5,13 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { KeyState } from "@/hooks/useKeyboard";
 import {
-  calculateThrust,
-  calculateLift,
-  calculateDrag,
-  calculateGravity,
-  calculateSpeedDelta,
-  clampSpeed,
+  BASE_SPEED,
+  BOOST_SPEED,
   PITCH_RATE,
-  ROLL_RATE,
-  MAX_SPEED,
+  TURN_RATE,
+  AUTO_LEVEL_RATE,
+  MIN_ALTITUDE,
+  MAX_ALTITUDE,
 } from "@/lib/physics";
 
 /**
@@ -24,9 +22,7 @@ export interface AircraftState {
   rotation: THREE.Euler;
   speed: number;
   altitude: number;
-  thrust: number;
-  pitch: number;
-  roll: number;
+  boosting: boolean;
 }
 
 interface AircraftProps {
@@ -36,162 +32,106 @@ interface AircraftProps {
 
 // 初期スポーン位置
 const SPAWN_POSITION = new THREE.Vector3(0, 50, 0);
-const INITIAL_THRUST = 30;
-const INITIAL_SPEED = 40;
 
 export default function Aircraft({ keys, stateRef }: AircraftProps) {
   const groupRef = useRef<THREE.Group>(null);
 
-  // 内部物理状態
-  const velocity = useRef(new THREE.Vector3(0, 0, -INITIAL_SPEED));
-  const speedRef = useRef(INITIAL_SPEED);
-  const thrustRef = useRef(INITIAL_THRUST);
-  const pitchRef = useRef(0);
-  const rollRef = useRef(0);
+  // 内部状態
+  const yawAngle = useRef(0); // Y軸回転角
+  const pitchAngle = useRef(0); // ピッチ角
+  const rollAngle = useRef(0); // 見た目のロール角
+  const speedRef = useRef(BASE_SPEED);
 
   useFrame((_, delta) => {
     if (!groupRef.current || !keys.current) return;
 
-    // デルタ時間を制限（タブ切替時の大ジャンプ防止）
     const dt = Math.min(delta, 0.05);
     const k = keys.current;
 
     // --- 入力処理 ---
 
-    // 推力の増減（Space/Shift）
-    if (k["Space"]) {
-      thrustRef.current = Math.min(100, thrustRef.current + 30 * dt);
-    }
-    if (k["ShiftLeft"] || k["ShiftRight"]) {
-      thrustRef.current = Math.max(0, thrustRef.current - 30 * dt);
-    }
+    // ブースト（Space）
+    const boosting = !!k["Space"];
+    const targetSpeed = boosting ? BOOST_SPEED : BASE_SPEED;
+    speedRef.current += (targetSpeed - speedRef.current) * 3 * dt;
 
-    // ピッチ操作（W/S）
-    if (k["KeyW"]) {
-      pitchRef.current += PITCH_RATE * dt;
+    // ピッチ操作（上下キー）
+    if (k["ArrowUp"]) {
+      pitchAngle.current += PITCH_RATE * dt;
     }
-    if (k["KeyS"]) {
-      pitchRef.current -= PITCH_RATE * dt;
+    if (k["ArrowDown"]) {
+      pitchAngle.current -= PITCH_RATE * dt;
     }
-    // ピッチ自動復帰（操作なし時にゆっくり戻る）
-    if (!k["KeyW"] && !k["KeyS"]) {
-      pitchRef.current *= 1 - 1.0 * dt;
+    // ピッチ自動復帰
+    if (!k["ArrowUp"] && !k["ArrowDown"]) {
+      pitchAngle.current *= 1 - AUTO_LEVEL_RATE * dt;
     }
     // ピッチ制限
-    pitchRef.current = Math.max(
-      -Math.PI / 3,
-      Math.min(Math.PI / 3, pitchRef.current)
+    pitchAngle.current = Math.max(
+      -Math.PI / 4,
+      Math.min(Math.PI / 4, pitchAngle.current)
     );
 
-    // ロール操作（A/D）
-    if (k["KeyA"]) {
-      rollRef.current += ROLL_RATE * dt;
+    // 旋回操作（左右キー）
+    let turnInput = 0;
+    if (k["ArrowLeft"]) {
+      turnInput = 1;
     }
-    if (k["KeyD"]) {
-      rollRef.current -= ROLL_RATE * dt;
+    if (k["ArrowRight"]) {
+      turnInput = -1;
     }
-    // ロール自動復帰
-    if (!k["KeyA"] && !k["KeyD"]) {
-      rollRef.current *= 1 - 1.5 * dt;
-    }
-    // ロール制限
-    rollRef.current = Math.max(
-      -Math.PI / 2,
-      Math.min(Math.PI / 2, rollRef.current)
+    yawAngle.current += turnInput * TURN_RATE * dt;
+
+    // ロール（旋回時に自動で傾く、見た目のみ）
+    const targetRoll = turnInput * 0.5; // 最大30度程度
+    rollAngle.current += (targetRoll - rollAngle.current) * 4 * dt;
+
+    // --- 位置・回転の更新 ---
+
+    // 前方向ベクトル（yawとpitchから計算）
+    const forward = new THREE.Vector3(
+      -Math.sin(yawAngle.current) * Math.cos(pitchAngle.current),
+      Math.sin(pitchAngle.current),
+      -Math.cos(yawAngle.current) * Math.cos(pitchAngle.current)
     );
-
-    // --- 物理計算 ---
-    const speed = speedRef.current;
-    const thrust = calculateThrust(thrustRef.current);
-    const drag = calculateDrag(speed);
-    const lift = calculateLift(speed);
-    const gravity = calculateGravity();
-
-    // 速度更新
-    const speedDelta = calculateSpeedDelta(thrust, drag, dt);
-    speedRef.current = clampSpeed(speed + speedDelta);
-
-    // 機体のクォータニオンから前方向ベクトルを取得
-    const quaternion = groupRef.current.quaternion;
-    const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion);
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(quaternion);
-
-    // 速度ベクトルを計算（機体の向いている方向に飛ぶ）
-    velocity.current.copy(forward).multiplyScalar(speedRef.current);
-
-    // 揚力と重力の効果
-    const liftForce = (lift - gravity) / 1000;
-    // 速度が十分な場合のみ揚力が効く
-    const liftFactor = Math.min(1, speed / 30);
-    velocity.current.y += liftForce * liftFactor * dt * 5;
-
-    // ロールによる旋回（ロール角に応じてヨー方向に曲がる）
-    const yawRate = -rollRef.current * 0.8 * (speed / MAX_SPEED);
-    const yawQuat = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      yawRate * dt
-    );
-
-    // ピッチ回転（機体のローカルX軸周り）
-    const pitchQuat = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(1, 0, 0).applyQuaternion(quaternion).normalize(),
-      pitchRef.current * dt
-    );
-
-    // ロール回転（機体のローカルZ軸周り）
-    const rollQuat = new THREE.Quaternion().setFromAxisAngle(
-      forward.clone().normalize(),
-      rollRef.current * dt * 0.5
-    );
-
-    // 回転を適用
-    groupRef.current.quaternion.premultiply(yawQuat);
-    groupRef.current.quaternion.premultiply(pitchQuat);
-
-    // ロールを視覚的に反映（機体の傾き）
-    const euler = new THREE.Euler().setFromQuaternion(
-      groupRef.current.quaternion,
-      "YXZ"
-    );
-    euler.z = rollRef.current;
-    groupRef.current.quaternion.setFromEuler(euler);
 
     // 位置更新
-    groupRef.current.position.add(
-      velocity.current.clone().multiplyScalar(dt)
+    groupRef.current.position.addScaledVector(
+      forward,
+      speedRef.current * dt
     );
 
-    // 地面衝突判定（高度0以下でリスポーン）
-    if (groupRef.current.position.y < 1) {
-      groupRef.current.position.copy(SPAWN_POSITION);
-      groupRef.current.quaternion.identity();
-      speedRef.current = INITIAL_SPEED;
-      thrustRef.current = INITIAL_THRUST;
-      pitchRef.current = 0;
-      rollRef.current = 0;
-      velocity.current.set(0, 0, -INITIAL_SPEED);
+    // 高度制限
+    if (groupRef.current.position.y < MIN_ALTITUDE) {
+      groupRef.current.position.y = MIN_ALTITUDE;
+      if (pitchAngle.current < 0) pitchAngle.current = 0;
+    }
+    if (groupRef.current.position.y > MAX_ALTITUDE) {
+      groupRef.current.position.y = MAX_ALTITUDE;
+      if (pitchAngle.current > 0) pitchAngle.current = 0;
     }
 
-    // 高度上限
-    if (groupRef.current.position.y > 500) {
-      groupRef.current.position.y = 500;
-    }
+    // 回転を適用（Euler: Y=ヨー, X=ピッチ, Z=ロール）
+    groupRef.current.rotation.set(
+      pitchAngle.current,
+      yawAngle.current,
+      rollAngle.current,
+      "YXZ"
+    );
 
     // --- 外部への状態共有 ---
     if (stateRef.current) {
       stateRef.current.position = groupRef.current.position.clone();
-      stateRef.current.rotation = euler.clone();
+      stateRef.current.rotation = groupRef.current.rotation.clone();
       stateRef.current.speed = speedRef.current;
       stateRef.current.altitude = groupRef.current.position.y;
-      stateRef.current.thrust = thrustRef.current;
-      stateRef.current.pitch = pitchRef.current;
-      stateRef.current.roll = rollRef.current;
+      stateRef.current.boosting = boosting;
     }
   });
 
   return (
     <group ref={groupRef} position={[SPAWN_POSITION.x, SPAWN_POSITION.y, SPAWN_POSITION.z]}>
-      {/* 胴体 (Fuselage) - シリンダー */}
+      {/* 胴体 (Fuselage) */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.4, 0.5, 4, 8]} />
         <meshStandardMaterial color="#4F46E5" metalness={0.6} roughness={0.3} />
@@ -203,7 +143,7 @@ export default function Aircraft({ keys, stateRef }: AircraftProps) {
         <meshStandardMaterial color="#6366F1" metalness={0.7} roughness={0.2} />
       </mesh>
 
-      {/* 主翼 (Main Wings) */}
+      {/* 主翼 */}
       <mesh position={[0, 0, 0.2]}>
         <boxGeometry args={[7, 0.08, 1.2]} />
         <meshStandardMaterial color="#4F46E5" metalness={0.5} roughness={0.4} />

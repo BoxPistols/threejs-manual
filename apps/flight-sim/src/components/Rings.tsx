@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { AircraftState } from "./Aircraft";
 
 /**
  * チェックポイントリング
- * 飛行機が通過するとスコアが加算され、新しい位置にリスポーンする
+ * 飛行機が近づくとスコアが加算され、新しい位置にリスポーンする
  */
 
 interface RingsProps {
@@ -15,29 +15,19 @@ interface RingsProps {
   onScoreChange: (score: number) => void;
 }
 
-// リングの位置を生成
+// リングの位置を生成（低高度・近距離に集中）
 function generateRingPosition(): [number, number, number] {
-  const x = (Math.random() - 0.5) * 600;
-  const y = 30 + Math.random() * 200;
-  const z = (Math.random() - 0.5) * 600;
+  const x = (Math.random() - 0.5) * 400;
+  const y = 20 + Math.random() * 120;
+  const z = (Math.random() - 0.5) * 400;
   return [x, y, z];
 }
 
-// リングのランダム回転を生成
-function generateRingRotation(): [number, number, number] {
-  return [
-    (Math.random() - 0.5) * 0.5,
-    Math.random() * Math.PI * 2,
-    (Math.random() - 0.5) * 0.5,
-  ];
-}
-
-const RING_COUNT = 10;
-const COLLECTION_DISTANCE = 12; // 通過判定の距離
+const RING_COUNT = 12;
+const COLLECTION_DISTANCE = 20; // 広めの通過判定
 
 interface RingData {
   position: [number, number, number];
-  rotation: [number, number, number];
   id: number;
 }
 
@@ -59,14 +49,14 @@ function CheckpointRing({
     if (!meshRef.current || !stateRef.current || collected.current) return;
 
     // リングの回転アニメーション
-    meshRef.current.rotation.z += delta * 0.5;
+    meshRef.current.rotation.y += delta * 0.8;
 
     // 発光アニメーション
     glowRef.current += delta * 2;
     const material = meshRef.current.material as THREE.MeshStandardMaterial;
     material.emissiveIntensity = 0.5 + Math.sin(glowRef.current) * 0.3;
 
-    // 衝突判定（飛行機とリングの距離）
+    // 衝突判定
     const aircraftPos = stateRef.current.position;
     const ringPos = new THREE.Vector3(...ring.position);
     const distance = aircraftPos.distanceTo(ringPos);
@@ -81,9 +71,8 @@ function CheckpointRing({
     <mesh
       ref={meshRef}
       position={ring.position}
-      rotation={ring.rotation}
     >
-      <torusGeometry args={[6, 0.5, 8, 32]} />
+      <torusGeometry args={[8, 0.6, 8, 32]} />
       <meshStandardMaterial
         color="#F59E0B"
         emissive="#F59E0B"
@@ -102,7 +91,6 @@ export default function Rings({ stateRef, onScoreChange }: RingsProps) {
   const [rings, setRings] = useState<RingData[]>(() =>
     Array.from({ length: RING_COUNT }).map((_, i) => ({
       position: generateRingPosition(),
-      rotation: generateRingRotation(),
       id: i,
     }))
   );
@@ -121,7 +109,6 @@ export default function Rings({ stateRef, onScoreChange }: RingsProps) {
             const newId = nextIdRef.current++;
             return {
               position: generateRingPosition(),
-              rotation: generateRingRotation(),
               id: newId,
             };
           }

@@ -23,9 +23,7 @@ export default function FlightSimPage() {
     rotation: new THREE.Euler(0, 0, 0),
     speed: 40,
     altitude: 50,
-    thrust: 30,
-    pitch: 0,
-    roll: 0,
+    boosting: false,
   });
 
   const handleScoreChange = useCallback((newScore: number) => {

@@ -14,12 +14,12 @@ interface FollowCameraProps {
   stateRef: React.RefObject<AircraftState>;
 }
 
-// カメラのオフセット（機体ローカル座標系で後方上方）
-const CAMERA_OFFSET = new THREE.Vector3(0, 5, 18);
-// カメラ注視点のオフセット（機体の少し前方）
-const LOOK_OFFSET = new THREE.Vector3(0, 1, -15);
-// カメラの追従スムーズ係数（大きいほど速く追従）
-const LERP_FACTOR = 3.0;
+// カメラのオフセット（少し遠めで見やすく）
+const CAMERA_OFFSET = new THREE.Vector3(0, 8, 22);
+// カメラ注視点のオフセット（機体の前方）
+const LOOK_OFFSET = new THREE.Vector3(0, 0, -20);
+// カメラの追従スムーズ係数
+const LERP_FACTOR = 4.0;
 
 export default function FollowCamera({ stateRef }: FollowCameraProps) {
   const { camera } = useThree();
