@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X, Search, Sun, Moon, Box } from "lucide-react";
 import { pages, getPageByPath } from "@/lib/navigation";
+import { searchShortcutLabel } from "@/lib/keyLabels";
+import { useKeyboardNav } from "@/hooks/useKeyboardNav";
 import { useTheme } from "next-themes";
 
 const navSections = [
@@ -78,17 +80,17 @@ export default function Navigation() {
     }
   }, [currentPage]);
 
-  // Cmd+K / Ctrl+K でフォーカス
+  // キーボードナビゲーション（Ctrl+↑↓ ページ移動、Shift+Ctrl+↑↓ セクション移動）
+  useKeyboardNav();
+
+  // Cmd+K / Ctrl+K でフォーカス（useKeyboardNav から focus-search イベントを受信）
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setIsOpen(true);
-        requestAnimationFrame(() => searchInputRef.current?.focus());
-      }
+    function handleFocusSearch() {
+      setIsOpen(true);
+      requestAnimationFrame(() => searchInputRef.current?.focus());
     }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("focus-search", handleFocusSearch);
+    return () => document.removeEventListener("focus-search", handleFocusSearch);
   }, []);
 
   const searchResults = searchQuery.trim()
@@ -98,7 +100,8 @@ export default function Navigation() {
     : [];
 
   const hasSearch = searchQuery.trim().length > 0;
-  const isMac = typeof navigator !== "undefined" && navigator.platform.includes("Mac");
+  const isMac =
+    typeof navigator !== "undefined" && navigator.platform.includes("Mac");
 
   return (
     <>
@@ -132,7 +135,7 @@ export default function Navigation() {
             <input
               ref={searchInputRef}
               type="text"
-              placeholder={`検索... (${isMac ? "Cmd" : "Ctrl"}+K)`}
+              placeholder={`検索... (${searchShortcutLabel(isMac)})`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
