@@ -1,10 +1,21 @@
 "use client";
 
-import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket } from "lucide-react";
+import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { modKey, ctrlKey } from "@/lib/keyLabels";
 import Link from "next/link";
 
 export default function Home() {
+  const isMac =
+    typeof navigator !== "undefined" && navigator.platform.includes("Mac");
+
+  const shortcuts = [
+    { keys: `${modKey(isMac)}+K`, description: "ページ検索" },
+    { keys: `${ctrlKey(isMac)}+↓`, description: "次のページへ移動" },
+    { keys: `${ctrlKey(isMac)}+↑`, description: "前のページへ移動" },
+    { keys: `Shift+${ctrlKey(isMac)}+↓`, description: "次のセクションへ移動" },
+    { keys: `Shift+${ctrlKey(isMac)}+↑`, description: "前のセクションへ移動" },
+  ];
   const learningPath = [
     {
       number: 1,
@@ -199,6 +210,46 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* キーボードショートカット */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-8 justify-center">
+            <Keyboard className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-poppins font-bold text-foreground">
+              キーボードショートカット
+            </h2>
+          </div>
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="text-left px-6 py-3 font-semibold text-foreground">
+                    キー
+                  </th>
+                  <th className="text-left px-6 py-3 font-semibold text-foreground">
+                    動作
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {shortcuts.map((s, i) => (
+                  <tr key={i} className="border-b border-border last:border-b-0">
+                    <td className="px-6 py-3">
+                      <kbd className="inline-flex items-center px-2 py-1 rounded bg-muted border border-border text-xs font-mono font-medium text-foreground">
+                        {s.keys}
+                      </kbd>
+                    </td>
+                    <td className="px-6 py-3 text-muted-foreground">
+                      {s.description}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
