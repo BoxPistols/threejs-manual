@@ -2,7 +2,7 @@
 
 import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { modKey, ctrlKey } from "@/lib/keyLabels";
+import { modKey, navModKey } from "@/lib/keyLabels";
 import Link from "next/link";
 
 export default function Home() {
@@ -11,10 +11,10 @@ export default function Home() {
 
   const shortcuts = [
     { keys: `${modKey(isMac)}+K`, description: "ページ検索" },
-    { keys: `${ctrlKey(isMac)}+↓`, description: "次のページへ移動" },
-    { keys: `${ctrlKey(isMac)}+↑`, description: "前のページへ移動" },
-    { keys: `Shift+${ctrlKey(isMac)}+↓`, description: "次のセクションへ移動" },
-    { keys: `Shift+${ctrlKey(isMac)}+↑`, description: "前のセクションへ移動" },
+    { keys: `${navModKey(isMac)}+↓`, description: "次のページへ移動" },
+    { keys: `${navModKey(isMac)}+↑`, description: "前のページへ移動" },
+    { keys: `Shift+${navModKey(isMac)}+↓`, description: "次のセクションへ移動" },
+    { keys: `Shift+${navModKey(isMac)}+↑`, description: "前のセクションへ移動" },
   ];
   const learningPath = [
     {

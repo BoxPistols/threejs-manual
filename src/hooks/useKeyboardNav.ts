@@ -26,19 +26,19 @@ export function useKeyboardNav() {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
 
-      // Ctrl + ↑↓ でページ / セクション移動
-      if (e.ctrlKey && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      // Alt(Option) + ↑↓ でページ / セクション移動
+      if (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
         e.preventDefault();
 
         if (e.shiftKey) {
-          // Shift+Ctrl+↑↓ → セクション単位移動
+          // Shift+Alt+↑↓ → セクション単位移動
           const target =
             e.key === "ArrowDown"
               ? getNextSectionFirstPage(pathname)
               : getPrevSectionFirstPage(pathname);
           if (target) router.push(target.path);
         } else {
-          // Ctrl+↑↓ → ページ単位移動
+          // Alt+↑↓ → ページ単位移動
           const target =
             e.key === "ArrowDown"
               ? getNextPage(pathname)

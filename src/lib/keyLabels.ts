@@ -2,8 +2,8 @@ export function modKey(isMac: boolean): string {
   return isMac ? '⌘' : 'Ctrl';
 }
 
-export function ctrlKey(isMac: boolean): string {
-  return isMac ? '⌃' : 'Ctrl';
+export function navModKey(isMac: boolean): string {
+  return isMac ? '⌥' : 'Alt';
 }
 
 export function searchShortcutLabel(isMac: boolean): string {
@@ -12,5 +12,5 @@ export function searchShortcutLabel(isMac: boolean): string {
 
 export function pageNavLabel(isMac: boolean, direction: 'next' | 'prev'): string {
   const arrow = direction === 'next' ? '↓' : '↑';
-  return `${ctrlKey(isMac)}+${arrow}`;
+  return `${navModKey(isMac)}+${arrow}`;
 }
