@@ -5,6 +5,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function ScenePage() {
   return (
@@ -156,6 +157,64 @@ renderer.render(scene, camera);`}
             </div>
           </li>
         </ol>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="基本のシーンを書いてみよう"
+          description="Scene、Camera、Renderer を作成し、立方体を表示するコードの空欄を埋めてください。"
+          initialCode={`// 1. シーンを作成
+const scene = new THREE.___();
+
+// 2. カメラを作成
+const camera = new THREE.___(
+  75, window.innerWidth / window.innerHeight, 0.1, 1000
+);
+
+// 3. レンダラーを作成
+const renderer = new THREE.___();
+
+// 4. 立方体を作成
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.___(cube);
+
+// 5. カメラ位置
+camera.position.z = 3;
+
+// 6. レンダリング
+renderer.___(scene, camera);`}
+          answer={`// 1. シーンを作成
+const scene = new THREE.Scene();
+
+// 2. カメラを作成
+const camera = new THREE.PerspectiveCamera(
+  75, window.innerWidth / window.innerHeight, 0.1, 1000
+);
+
+// 3. レンダラーを作成
+const renderer = new THREE.WebGLRenderer();
+
+// 4. 立方体を作成
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// 5. カメラ位置
+camera.position.z = 3;
+
+// 6. レンダリング
+renderer.render(scene, camera);`}
+          hints={[
+            'シーンは THREE.Scene() で作成します',
+            'カメラは THREE.PerspectiveCamera() です',
+            'レンダラーは THREE.WebGLRenderer() を使います',
+            'オブジェクトの追加は scene.add()、描画は renderer.render() です',
+          ]}
+          keywords={['Scene()', 'PerspectiveCamera(', 'WebGLRenderer()', 'scene.add(', 'renderer.render(']}
+        />
       </div>
 
       <div className="mt-8">

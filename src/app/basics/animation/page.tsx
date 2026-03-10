@@ -9,6 +9,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 回転する立方体コンポーネント（useFrame は Canvas 内で使う必要がある）
 function RotatingCube({ speed }: { speed: number }) {
@@ -211,6 +212,48 @@ function animate() {
             カクつきの原因になります。
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="アニメーションループを完成させよう"
+          description="THREE.Clock を使って、立方体を時間ベースで回転させるアニメーションループを書いてください。X軸とY軸の両方を回転させましょう。"
+          initialCode={`const clock = new THREE.___();
+
+function animate() {
+  requestAnimationFrame(___);
+
+  const delta = clock.___();
+
+  cube.rotation.x += delta * ___;
+  cube.rotation.y += delta * ___;
+
+  renderer.render(scene, camera);
+}
+
+animate();`}
+          answer={`const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const delta = clock.getDelta();
+
+  cube.rotation.x += delta * 1.0;
+  cube.rotation.y += delta * 0.7;
+
+  renderer.render(scene, camera);
+}
+
+animate();`}
+          hints={[
+            'THREE.Clock() でクロックを作成します',
+            'requestAnimationFrame に渡すのは animate 関数自身です',
+            'clock.getDelta() でフレーム間の経過秒数を取得します',
+            'delta に速度係数を掛けて回転速度を調整します',
+          ]}
+          keywords={['Clock()', 'requestAnimationFrame(animate)', 'getDelta()', 'rotation.x', 'rotation.y']}
+        />
       </div>
 
       <div className="mt-8">

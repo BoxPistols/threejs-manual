@@ -6,6 +6,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // インタラクティブなボックスコンポーネント
 function InteractiveBox({
@@ -235,6 +236,46 @@ function animate() {
             </li>
           </ul>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="Raycaster を使ったクリック検出"
+          description="Raycaster を作成し、マウスクリックで 3D オブジェクトの色を赤に変更するコードの空欄を埋めてください。"
+          initialCode={`const raycaster = new THREE.___();
+const mouse = new THREE.___();
+
+window.addEventListener('click', () => {
+  raycaster.___(mouse, camera);
+
+  const intersects = raycaster.___(scene.children);
+
+  if (intersects.length > 0) {
+    const obj = intersects[0].object;
+    obj.material.color.set(0xff0000);
+  }
+});`}
+          answer={`const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+window.addEventListener('click', () => {
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(scene.children);
+
+  if (intersects.length > 0) {
+    const obj = intersects[0].object;
+    obj.material.color.set(0xff0000);
+  }
+});`}
+          hints={[
+            'レイキャスターは THREE.Raycaster() で作成します',
+            'マウス座標は THREE.Vector2() で保持します',
+            'setFromCamera(mouse, camera) でレイの方向を設定します',
+            'intersectObjects() で交差するオブジェクトを取得します',
+          ]}
+          keywords={['Raycaster()', 'Vector2()', 'setFromCamera(', 'intersectObjects(']}
+        />
       </div>
 
       <div className="mt-8">

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X, Search, Sun, Moon, Box } from "lucide-react";
 import { pages, getPageByPath } from "@/lib/navigation";
+import { searchIndex } from "@/lib/searchIndex";
+import { toSlug } from "@/hooks/useAutoHeadingIds";
 import { searchShortcutLabel } from "@/lib/keyLabels";
 import { useKeyboardNav } from "@/hooks/useKeyboardNav";
 import { useTheme } from "next-themes";
@@ -90,11 +92,18 @@ export default function Navigation() {
     return () => document.removeEventListener("focus-search", handleFocusSearch);
   }, []);
 
-  const searchResults = searchQuery.trim()
-    ? pages.filter((p) =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return pages.flatMap((p) => {
+      const titleMatch = p.title.toLowerCase().includes(q);
+      const keywords = (searchIndex[p.path] ?? []).filter((kw) =>
+        kw.toLowerCase().includes(q)
+      );
+      if (!titleMatch && keywords.length === 0) return [];
+      return [{ ...p, matchedKeywords: keywords }];
+    });
+  }, [searchQuery]);
 
   const hasSearch = searchQuery.trim().length > 0;
   const isMac =
@@ -160,20 +169,38 @@ export default function Navigation() {
                 </p>
               ) : (
                 searchResults.map((page) => (
-                  <Link
-                    key={page.path}
-                    href={page.path}
-                    onClick={() => {
-                      setIsOpen(false);
-                      setSearchQuery("");
-                    }}
-                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
-                  >
-                    <span className="text-xs text-primary font-semibold mr-1.5">
-                      STEP {page.step}
-                    </span>
-                    {page.title}
-                  </Link>
+                  <div key={page.path}>
+                    <Link
+                      href={page.path}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
+                    >
+                      <span className="text-xs text-primary font-semibold mr-1.5">
+                        STEP {page.step}
+                      </span>
+                      {page.title}
+                    </Link>
+                    {page.matchedKeywords.length > 0 && (
+                      <div className="ml-6 space-y-0.5">
+                        {page.matchedKeywords.map((kw) => (
+                          <Link
+                            key={kw}
+                            href={`${page.path}#${toSlug(kw)}`}
+                            onClick={() => {
+                              setIsOpen(false);
+                              setSearchQuery("");
+                            }}
+                            className="block px-3 py-1 text-xs text-muted-foreground hover:text-primary hover:bg-sidebar-accent/50 rounded transition-colors"
+                          >
+                            # {kw}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))
               )}
             </div>

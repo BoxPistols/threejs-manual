@@ -86,9 +86,14 @@ export default function Home() {
       {/* Hero */}
       <section className="pt-20 pb-16 px-4 md:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-6 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-            <span className="text-primary font-medium text-sm">
-              はじめての 3D グラフィックス
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="inline-block px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+              <span className="text-primary font-medium text-sm">
+                はじめての 3D グラフィックス
+              </span>
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-xs font-mono font-medium border border-border">
+              v1.0.0
             </span>
           </div>
 

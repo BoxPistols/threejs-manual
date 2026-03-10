@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import Navigation from "@/components/Navigation";
 import KeyboardNav from "@/components/KeyboardNav";
+import AutoHeadingIds from "@/components/AutoHeadingIds";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           <TooltipProvider>
             <Navigation />
             <KeyboardNav />
+            <AutoHeadingIds />
             <main className="md:ml-64 pb-12">{children}</main>
           </TooltipProvider>
         </ThemeProvider>
