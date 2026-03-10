@@ -80,10 +80,7 @@ export default function Navigation() {
     }
   }, [currentPage]);
 
-  // キーボードナビゲーション（Ctrl+↑↓ ページ移動、Shift+Ctrl+↑↓ セクション移動）
-  useKeyboardNav();
-
-  // Cmd+K / Ctrl+K でフォーカス（useKeyboardNav から focus-search イベントを受信）
+  // focus-search カスタムイベントで検索フォーカス（KeyboardNav から発火）
   useEffect(() => {
     function handleFocusSearch() {
       setIsOpen(true);
