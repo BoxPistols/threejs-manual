@@ -40,7 +40,7 @@ export default function InfoBox({ type = "info", title, children }: InfoBoxProps
   const style = styles[type];
 
   return (
-    <div className={`rounded-lg border-l-4 ${style.bg} ${style.border} p-4`}>
+    <div className={`rounded-r-lg border-l-4 ${style.bg} ${style.border} p-4`}>
       <div className="flex gap-3">
         <div className="flex-shrink-0 pt-0.5">{style.icon}</div>
         <div className="flex-1">
