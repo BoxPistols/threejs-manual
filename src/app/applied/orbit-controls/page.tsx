@@ -10,6 +10,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // ゆっくり浮遊する球体
 function FloatingSphere({
@@ -283,6 +284,91 @@ function App() {
             </li>
           </ul>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="OrbitControls を設定しよう"
+          description="OrbitControlsを作成し、ダンピング・自動回転・ズーム距離制限を設定してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// 正十二面体を作成
+const geometry = new THREE.DodecahedronGeometry(1);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+
+camera.position.set(4, 3, 4);
+
+// OrbitControls を作成
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// ダンピング（慣性）を有効にする
+controls.___ = true;
+controls.dampingFactor = 0.08;
+
+// 自動回転を有効にする
+controls.___ = true;
+controls.autoRotateSpeed = 2.0;
+
+// ズーム距離を制限する
+controls.___ = 2;
+controls.___ = 12;
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.DodecahedronGeometry(1);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+
+camera.position.set(4, 3, 4);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+controls.autoRotate = true;
+controls.autoRotateSpeed = 2.0;
+
+controls.minDistance = 2;
+controls.maxDistance = 12;
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();`}
+          keywords={['enableDamping', 'autoRotate', 'minDistance', 'maxDistance']}
+          hints={[
+            'controls.enableDamping = true でダンピングを有効に',
+            'controls.autoRotate = true で自動回転を有効に',
+            'controls.minDistance / maxDistance でズーム範囲を制限',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

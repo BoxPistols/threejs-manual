@@ -7,6 +7,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function LightPage() {
   const [ambientIntensity, setAmbientIntensity] = useState(0.3);
@@ -245,6 +246,68 @@ scene.add(pointLight);`}
           影の計算はGPU負荷が高いため、必要なライトとオブジェクトだけに設定しましょう。
         </p>
       </InfoBox>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="ライトを追加してシーンを照らそう"
+          description="暗いシーンに AmbientLight と DirectionalLight を追加して、球体を見えるようにしましょう。MeshStandardMaterial はライトがないと真っ黒になります。"
+          preview
+          initialCode={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 4;
+
+// MeshStandardMaterial の球体（ライトが必要）
+const geometry = new THREE.SphereGeometry(1.2, 32, 32);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5, roughness: 0.4, metalness: 0.3 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// 環境光を追加（空欄を埋めてください）
+const ambientLight = new THREE.___(0xffffff, ___);
+scene.add(ambientLight);
+
+// 平行光を追加（空欄を埋めてください）
+const dirLight = new THREE.___(0xffffff, ___);
+dirLight.position.set(5, 5, 5);
+scene.add(dirLight);
+
+renderer.render(scene, camera);`}
+          answer={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 4;
+
+// MeshStandardMaterial の球体（ライトが必要）
+const geometry = new THREE.SphereGeometry(1.2, 32, 32);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5, roughness: 0.4, metalness: 0.3 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// 環境光を追加
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambientLight);
+
+// 平行光を追加
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+dirLight.position.set(5, 5, 5);
+scene.add(dirLight);
+
+renderer.render(scene, camera);`}
+          hints={[
+            '環境光は THREE.AmbientLight(色, 強度) で作成します',
+            '平行光は THREE.DirectionalLight(色, 強度) で作成します',
+            '環境光の強度は 0.3 程度、平行光は 1.0 程度が自然です',
+          ]}
+          keywords={['AmbientLight(', 'DirectionalLight(']}
+        />
+      </div>
 
       <div className="mt-8">
         <InfoBox type="success" title="まとめ">

@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import Navigation from "@/components/Navigation";
 import KeyboardNav from "@/components/KeyboardNav";
+import AutoHeadingIds from "@/components/AutoHeadingIds";
+import HelpModal from "@/components/HelpModal";
+import SettingsPopup from "@/components/SettingsPopup";
+import { ThemeContextProvider } from "@/contexts/ThemeContext";
+import { LayoutProvider } from "@/contexts/LayoutContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -36,12 +41,19 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <TooltipProvider>
-            <Navigation />
-            <KeyboardNav />
-            <main className="md:ml-64 pb-12">{children}</main>
-          </TooltipProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeContextProvider>
+            <LayoutProvider>
+              <TooltipProvider>
+                <Navigation />
+                <KeyboardNav />
+                <AutoHeadingIds />
+                <HelpModal />
+                <SettingsPopup />
+                <main className="md:ml-64 pb-12">{children}</main>
+              </TooltipProvider>
+            </LayoutProvider>
+          </ThemeContextProvider>
         </ThemeProvider>
       </body>
     </html>

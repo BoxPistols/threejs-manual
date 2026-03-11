@@ -8,6 +8,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // プリミティブで作った小さな家
 function SimpleHouse() {
@@ -251,6 +252,77 @@ gltfLoader.setDRACOLoader(dracoLoader);`}
             ローディング表示を入れることを推奨します。
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="プリミティブで家を作ってみよう"
+          description="BoxGeometry と ConeGeometry を組み合わせて、壁と屋根からなる簡単な家を作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// ライトを追加
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404040));
+
+// 壁（箱）を作成
+const wallGeometry = new THREE.___(2, 1.5, 2);
+const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xE8D5B7 });
+const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+wall.position.y = ___;
+scene.add(wall);
+
+// 屋根（コーン）を作成
+const roofGeometry = new THREE.___(1.7, 1, 4);
+const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+roof.position.y = ___;
+roof.rotation.y = Math.PI / 4;
+scene.add(roof);
+
+camera.position.set(4, 3, 4);
+camera.lookAt(0, 1, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404040));
+
+const wallGeometry = new THREE.BoxGeometry(2, 1.5, 2);
+const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xE8D5B7 });
+const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+wall.position.y = 0.75;
+scene.add(wall);
+
+const roofGeometry = new THREE.ConeGeometry(1.7, 1, 4);
+const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+roof.position.y = 1.95;
+roof.rotation.y = Math.PI / 4;
+scene.add(roof);
+
+camera.position.set(4, 3, 4);
+camera.lookAt(0, 1, 0);
+renderer.render(scene, camera);`}
+          keywords={['BoxGeometry(', 'ConeGeometry(', 'position.y']}
+          hints={[
+            '壁は BoxGeometry(幅, 高さ, 奥行き) で作成',
+            '屋根は ConeGeometry(半径, 高さ, セグメント数) で作成',
+            '壁の高さが1.5なので、y位置は 0.75（半分）に設定します',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

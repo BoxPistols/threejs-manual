@@ -5,6 +5,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function ResponsivePage() {
   return (
@@ -232,6 +233,72 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             <li>ソフトキーボードの表示/非表示でビューポートサイズが変わる</li>
           </ul>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="リサイズ対応を実装しよう"
+          description="ウィンドウリサイズ時にレンダラーサイズとカメラのアスペクト比を更新するコードを完成させてください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.z = 3;
+
+// リサイズイベントリスナーを追加
+window.addEventListener('___', () => {
+  // レンダラーサイズを更新
+  renderer.___(window.innerWidth, window.innerHeight);
+
+  // カメラのアスペクト比を更新
+  camera.___ = window.innerWidth / window.innerHeight;
+  camera.___();
+
+  // 再描画
+  renderer.render(scene, camera);
+});
+
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.z = 3;
+
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.render(scene, camera);
+});
+
+renderer.render(scene, camera);`}
+          keywords={['resize', 'setSize(', 'aspect', 'updateProjectionMatrix(']}
+          hints={[
+            "イベント名は 'resize' です",
+            'camera.aspect でアスペクト比を更新します',
+            'camera.updateProjectionMatrix() でカメラの変更を反映します',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

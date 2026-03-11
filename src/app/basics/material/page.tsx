@@ -5,6 +5,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function MaterialPage() {
   return (
@@ -188,6 +189,74 @@ export default function MaterialPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="マテリアルを比較してみよう"
+          description="3つの球体に異なるマテリアルを設定して、見た目の違いを確認しましょう。左は MeshBasicMaterial、中央は MeshBasicMaterial（wireframe）、右は MeshBasicMaterial（色を変えて）で作成してください。"
+          preview
+          initialCode={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 6;
+
+// 左: 通常のベーシックマテリアル
+const geo = new THREE.SphereGeometry(1, 32, 32);
+const mat1 = new THREE.___({ color: 0x4F46E5 });
+const sphere1 = new THREE.Mesh(geo, mat1);
+sphere1.position.x = -3;
+scene.add(sphere1);
+
+// 中央: ワイヤーフレーム表示
+const mat2 = new THREE.___({ color: 0x7C3AED, wireframe: ___ });
+const sphere2 = new THREE.Mesh(geo, mat2);
+scene.add(sphere2);
+
+// 右: 別の色
+const mat3 = new THREE.___({ color: 0x0EA5E9 });
+const sphere3 = new THREE.Mesh(geo, mat3);
+sphere3.position.x = 3;
+scene.add(sphere3);
+
+renderer.render(scene, camera);`}
+          answer={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 6;
+
+// 左: 通常のベーシックマテリアル
+const geo = new THREE.SphereGeometry(1, 32, 32);
+const mat1 = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const sphere1 = new THREE.Mesh(geo, mat1);
+sphere1.position.x = -3;
+scene.add(sphere1);
+
+// 中央: ワイヤーフレーム表示
+const mat2 = new THREE.MeshBasicMaterial({ color: 0x7C3AED, wireframe: true });
+const sphere2 = new THREE.Mesh(geo, mat2);
+scene.add(sphere2);
+
+// 右: 別の色
+const mat3 = new THREE.MeshBasicMaterial({ color: 0x0EA5E9 });
+const sphere3 = new THREE.Mesh(geo, mat3);
+sphere3.position.x = 3;
+scene.add(sphere3);
+
+renderer.render(scene, camera);`}
+          hints={[
+            'MeshBasicMaterial はライト不要で色が表示されます',
+            'wireframe: true でワイヤーフレーム表示になります',
+            '色は 0x に続けて16進数で指定します',
+          ]}
+          keywords={['MeshBasicMaterial', 'wireframe: true']}
+        />
       </div>
 
       <div className="mt-8">

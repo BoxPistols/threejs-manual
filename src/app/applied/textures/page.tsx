@@ -9,6 +9,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // チェッカーボードテクスチャを生成するカスタムフック
 function useCheckerboardTexture(size = 256, divisions = 8) {
@@ -224,6 +225,80 @@ const material = new THREE.MeshStandardMaterial({
             モバイル端末では 1024x1024 以下に抑えることを推奨します。
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="CanvasTexture でチェッカーボードを作ろう"
+          description="Canvas API を使ってチェッカーボードテクスチャを生成し、立方体に貼り付けてください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Canvas でチェッカーボードを描画
+const canvas = document.createElement('canvas');
+canvas.width = 256;
+canvas.height = 256;
+const ctx = canvas.getContext('2d');
+
+const cellSize = 256 / 8;
+for (let y = 0; y < 8; y++) {
+  for (let x = 0; x < 8; x++) {
+    ctx.fillStyle = (x + y) % 2 === 0 ? '#4F46E5' : '#E0E7FF';
+    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  }
+}
+
+// CanvasTexture を作成
+const texture = new THREE.___(canvas);
+
+// マテリアルの map にテクスチャを設定
+const material = new THREE.MeshBasicMaterial({ ___: texture });
+const geometry = new THREE.BoxGeometry(2, 2, 2);
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const canvas = document.createElement('canvas');
+canvas.width = 256;
+canvas.height = 256;
+const ctx = canvas.getContext('2d');
+
+const cellSize = 256 / 8;
+for (let y = 0; y < 8; y++) {
+  for (let x = 0; x < 8; x++) {
+    ctx.fillStyle = (x + y) % 2 === 0 ? '#4F46E5' : '#E0E7FF';
+    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  }
+}
+
+const texture = new THREE.CanvasTexture(canvas);
+
+const material = new THREE.MeshBasicMaterial({ map: texture });
+const geometry = new THREE.BoxGeometry(2, 2, 2);
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['CanvasTexture(', 'map:']}
+          hints={[
+            'Canvas からテクスチャを作るには THREE.CanvasTexture(canvas) を使います',
+            'マテリアルにテクスチャを貼るには map プロパティを使います',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

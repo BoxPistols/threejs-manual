@@ -3,11 +3,14 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X, Search, Sun, Moon, Box } from "lucide-react";
+import { ChevronDown, Menu, X, Search, Sun, Moon, Box, Bookmark } from "lucide-react";
 import { pages, getPageByPath } from "@/lib/navigation";
+import { searchIndex } from "@/lib/searchIndex";
+import { toSlug } from "@/hooks/useAutoHeadingIds";
 import { searchShortcutLabel } from "@/lib/keyLabels";
 import { useKeyboardNav } from "@/hooks/useKeyboardNav";
-import { useTheme } from "next-themes";
+import { useThemeContext } from "@/contexts/ThemeContext";
+import { useBookmarks } from "@/hooks/useBookmarks";
 
 const navSections = [
   {
@@ -68,7 +71,8 @@ export default function Navigation() {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useThemeContext();
+  const { bookmarks } = useBookmarks();
   const pathname = usePathname();
 
   const currentPage = useMemo(() => getPageByPath(pathname), [pathname]);
@@ -90,11 +94,18 @@ export default function Navigation() {
     return () => document.removeEventListener("focus-search", handleFocusSearch);
   }, []);
 
-  const searchResults = searchQuery.trim()
-    ? pages.filter((p) =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return pages.flatMap((p) => {
+      const titleMatch = p.title.toLowerCase().includes(q);
+      const keywords = (searchIndex[p.path] ?? []).filter((kw) =>
+        kw.toLowerCase().includes(q)
+      );
+      if (!titleMatch && keywords.length === 0) return [];
+      return [{ ...p, matchedKeywords: keywords }];
+    });
+  }, [searchQuery]);
 
   const hasSearch = searchQuery.trim().length > 0;
   const isMac =
@@ -141,7 +152,7 @@ export default function Navigation() {
 
           {/* ダークモード切替 */}
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="w-full flex items-center gap-2 px-4 py-2 mb-4 text-sm rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
@@ -154,31 +165,79 @@ export default function Navigation() {
               <p className="px-4 py-1 text-xs font-semibold text-muted-foreground">
                 検索結果 ({searchResults.length}件)
               </p>
+
               {searchResults.length === 0 ? (
                 <p className="px-4 py-2 text-sm text-muted-foreground">
                   該当するページがありません
                 </p>
               ) : (
                 searchResults.map((page) => (
-                  <Link
-                    key={page.path}
-                    href={page.path}
-                    onClick={() => {
-                      setIsOpen(false);
-                      setSearchQuery("");
-                    }}
-                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
-                  >
-                    <span className="text-xs text-primary font-semibold mr-1.5">
-                      STEP {page.step}
-                    </span>
-                    {page.title}
-                  </Link>
+                  <div key={page.path}>
+                    <Link
+                      href={page.path}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
+                    >
+                      <span className="text-xs text-primary font-semibold mr-1.5">
+                        STEP {page.step}
+                      </span>
+                      {page.title}
+                    </Link>
+                    {page.matchedKeywords.length > 0 && (
+                      <div className="ml-6 space-y-0.5">
+                        {page.matchedKeywords.map((kw) => (
+                          <Link
+                            key={kw}
+                            href={`${page.path}#${toSlug(kw)}`}
+                            onClick={() => {
+                              setIsOpen(false);
+                              setSearchQuery("");
+                            }}
+                            className="block px-3 py-1 text-xs text-muted-foreground hover:text-primary hover:bg-sidebar-accent/50 rounded transition-colors"
+                          >
+                            # {kw}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))
               )}
             </div>
           ) : (
             <div className="space-y-1">
+              {/* ブックマーク */}
+              {bookmarks.length > 0 && (
+                <div className="mb-3">
+                  <p className="px-4 py-1 text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                    <Bookmark size={12} />
+                    ブックマーク
+                  </p>
+                  {bookmarks.map((bPath) => {
+                    const page = getPageByPath(bPath);
+                    if (!page) return null;
+                    return (
+                      <Link
+                        key={bPath}
+                        href={bPath}
+                        onClick={() => setIsOpen(false)}
+                        className={`block px-4 py-1.5 text-sm rounded-lg transition-colors ${
+                          pathname === bPath
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+                        }`}
+                      >
+                        {page.title}
+                      </Link>
+                    );
+                  })}
+                  <div className="mx-4 my-2 border-t border-sidebar-border" />
+                </div>
+              )}
+
               {navSections.map((section) => (
                 <div key={section.id}>
                   {section.href ? (

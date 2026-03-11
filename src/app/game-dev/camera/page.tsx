@@ -9,6 +9,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 飛行機モデル（プリミティブ）
 function AirplaneModel() {
@@ -414,6 +415,105 @@ useEffect(() => {
   window.addEventListener("keydown", handleKey);
   return () => window.removeEventListener("keydown", handleKey);
 }, []);`}
+        />
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="lerp でカメラを滑らかに追従させよう"
+          description="線形補間（lerp）を使って、移動するオブジェクトにカメラを滑らかに追従させてください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(20, 20));
+
+// 移動するターゲット
+const target = new THREE.Mesh(
+  new THREE.BoxGeometry(0.5, 0.5, 0.5),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+scene.add(target);
+
+// カメラの現在位置（lerp用）
+const cameraPos = new THREE.Vector3(0, 5, 10);
+const smoothing = ___;  // 0.05 = ゆっくり追従
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = performance.now() * 0.001;
+
+  // ターゲットを円軌道で移動
+  target.position.x = Math.cos(t * 0.5) * 5;
+  target.position.z = Math.sin(t * 0.5) * 5;
+  target.position.y = 0.25;
+
+  // カメラの目標位置 = ターゲットの後方上方
+  const targetCamPos = new THREE.Vector3(
+    target.position.x,
+    target.position.y + 5,
+    target.position.z + 8
+  );
+
+  // lerp で滑らかにカメラを移動
+  cameraPos.___(targetCamPos, smoothing);
+  camera.position.copy(cameraPos);
+  camera.___(target.position);
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(20, 20));
+
+const target = new THREE.Mesh(
+  new THREE.BoxGeometry(0.5, 0.5, 0.5),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+scene.add(target);
+
+const cameraPos = new THREE.Vector3(0, 5, 10);
+const smoothing = 0.05;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = performance.now() * 0.001;
+
+  target.position.x = Math.cos(t * 0.5) * 5;
+  target.position.z = Math.sin(t * 0.5) * 5;
+  target.position.y = 0.25;
+
+  const targetCamPos = new THREE.Vector3(
+    target.position.x,
+    target.position.y + 5,
+    target.position.z + 8
+  );
+
+  cameraPos.lerp(targetCamPos, smoothing);
+  camera.position.copy(cameraPos);
+  camera.lookAt(target.position);
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          keywords={['lerp(', 'lookAt(', '0.05']}
+          hints={[
+            'Vector3.lerp(目標, 補間率) で滑らかに目標に近づきます',
+            'camera.lookAt(position) でカメラをターゲットに向けます',
+            'smoothing は 0.05 程度がゆっくりとした自然な追従になります',
+          ]}
+          preview
         />
       </div>
 

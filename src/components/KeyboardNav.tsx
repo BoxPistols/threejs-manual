@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Settings, HelpCircle } from "lucide-react";
 import {
   getNextPage,
   getPreviousPage,
@@ -11,12 +11,14 @@ import {
   getPrevSectionFirstPage,
   pages,
 } from "@/lib/navigation";
+import { useThemeContext } from "@/contexts/ThemeContext";
 
 export default function KeyboardNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [showToast, setShowToast] = useState<string | null>(null);
   const [isMac, setIsMac] = useState(true);
+  const { toggleTheme } = useThemeContext();
 
   useEffect(() => {
     setIsMac(navigator.userAgent.includes("Mac"));
@@ -45,6 +47,13 @@ export default function KeyboardNav() {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         document.dispatchEvent(new CustomEvent("focus-search"));
+        return;
+      }
+
+      // Cmd/Ctrl+Shift+D でダークモード切替
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "D") {
+        e.preventDefault();
+        toggleTheme();
         return;
       }
 
@@ -96,7 +105,7 @@ export default function KeyboardNav() {
 
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [pathname, navigate]);
+  }, [pathname, navigate, toggleTheme]);
 
   const mod = isMac ? "⌘" : "Ctrl";
 
@@ -180,6 +189,26 @@ export default function KeyboardNav() {
             <span className="ml-0.5">検索</span>
           </span>
         </div>
+
+        <div className="h-4 w-px bg-border mx-1" />
+
+        <button
+          onClick={() => document.dispatchEvent(new CustomEvent("open-settings"))}
+          className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          title="設定 (⌘/Ctrl+,)"
+        >
+          <Settings size={14} />
+          <span className="hidden lg:inline">設定</span>
+        </button>
+
+        <button
+          onClick={() => document.dispatchEvent(new CustomEvent("open-help"))}
+          className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          title="ヘルプ (?)"
+        >
+          <HelpCircle size={14} />
+          <span className="hidden lg:inline">ヘルプ</span>
+        </button>
       </div>
     </>
   );

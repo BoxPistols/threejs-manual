@@ -8,6 +8,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // スタイル付き飛行機（プリミティブで構成）
 function StylizedAirplane({ groupRef }: { groupRef: React.RefObject<THREE.Group | null> }) {
@@ -257,6 +258,93 @@ function Aircraft() {
   );
 }`}
       />
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="ゲームループの基本を書こう"
+          description="requestAnimationFrame でゲームループを作成し、キー入力の追跡と立方体の移動を実装してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(10, 10));
+
+camera.position.set(3, 3, 3);
+camera.lookAt(0, 0, 0);
+
+// キー入力の追跡
+const keys = {};
+window.addEventListener('___', (e) => { keys[e.code] = true; });
+window.addEventListener('___', (e) => { keys[e.code] = false; });
+
+const speed = 2;
+
+// ゲームループ
+function gameLoop() {
+  ___(gameLoop);
+
+  // キー入力で移動
+  if (keys['KeyW']) cube.position.z -= speed * 0.016;
+  if (keys['KeyS']) cube.position.z += speed * 0.016;
+  if (keys['KeyA']) cube.position.x -= speed * 0.016;
+  if (keys['KeyD']) cube.position.x += speed * 0.016;
+
+  renderer.render(scene, camera);
+}
+gameLoop();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+const material = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(10, 10));
+
+camera.position.set(3, 3, 3);
+camera.lookAt(0, 0, 0);
+
+const keys = {};
+window.addEventListener('keydown', (e) => { keys[e.code] = true; });
+window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+const speed = 2;
+
+function gameLoop() {
+  requestAnimationFrame(gameLoop);
+
+  if (keys['KeyW']) cube.position.z -= speed * 0.016;
+  if (keys['KeyS']) cube.position.z += speed * 0.016;
+  if (keys['KeyA']) cube.position.x -= speed * 0.016;
+  if (keys['KeyD']) cube.position.x += speed * 0.016;
+
+  renderer.render(scene, camera);
+}
+gameLoop();`}
+          keywords={['keydown', 'keyup', 'requestAnimationFrame(']}
+          hints={[
+            "キーが押された時は 'keydown' イベント、離された時は 'keyup' イベント",
+            'requestAnimationFrame(gameLoop) で次フレームを予約します',
+            'keys オブジェクトにキー状態を記録して毎フレーム参照します',
+          ]}
+          preview
+        />
+      </div>
 
       <div className="mt-8">
         <InfoBox type="info" title="開発編で作る 6 つのステップ">
