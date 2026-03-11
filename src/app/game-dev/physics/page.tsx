@@ -9,6 +9,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 物理シミュレーション付きの飛行体
 function PhysicsAircraft({
@@ -380,6 +381,122 @@ function updateFlightPhysics(state: FlightState, delta: number) {
     </group>
   );
 }`}
+        />
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="重力で落下する球体を作ろう"
+          description="重力と地面バウンドを実装して、球体が落下して跳ね返るシミュレーションを作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+
+// 球体を作成
+const sphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.3, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+sphere.position.y = 4;
+scene.add(sphere);
+
+// 地面
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  new THREE.MeshStandardMaterial({ color: 0x333333 })
+);
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
+
+scene.add(new THREE.GridHelper(10, 10));
+
+camera.position.set(3, 3, 5);
+camera.lookAt(0, 1, 0);
+
+// 物理パラメータ
+let velocityY = 0;
+const ___ = 9.8;     // 重力加速度
+const bounce = 0.7;   // 反発係数
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = 0.016;
+
+  // 重力を適用
+  velocityY -= ___ * delta;
+
+  // 位置を更新
+  sphere.position.y += velocityY * delta;
+
+  // 地面との衝突（バウンド）
+  if (sphere.position.y < 0.3) {
+    sphere.position.y = 0.3;
+    velocityY = -velocityY * ___;
+  }
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+
+const sphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.3, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+sphere.position.y = 4;
+scene.add(sphere);
+
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  new THREE.MeshStandardMaterial({ color: 0x333333 })
+);
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
+
+scene.add(new THREE.GridHelper(10, 10));
+
+camera.position.set(3, 3, 5);
+camera.lookAt(0, 1, 0);
+
+let velocityY = 0;
+const gravity = 9.8;
+const bounce = 0.7;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = 0.016;
+
+  velocityY -= gravity * delta;
+
+  sphere.position.y += velocityY * delta;
+
+  if (sphere.position.y < 0.3) {
+    sphere.position.y = 0.3;
+    velocityY = -velocityY * bounce;
+  }
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          keywords={['gravity', 'velocityY', 'bounce']}
+          hints={[
+            '重力加速度は 9.8 (m/s^2) が標準です',
+            '毎フレーム velocityY から gravity * delta を引きます',
+            '反発係数 bounce (0-1) で跳ね返りの強さを制御します',
+          ]}
+          preview
         />
       </div>
 

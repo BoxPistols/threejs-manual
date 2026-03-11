@@ -9,6 +9,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // メインのジオメトリ：浮遊する正二十面体
 function FloatingIcosahedron() {
@@ -394,6 +395,83 @@ export default function PortfolioScene() {
             <li>モデルの追加: GLTF モデルを読み込んでシーンに配置</li>
           </ul>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="ポートフォリオ用シーンの基盤を作ろう"
+          description="グリッド床面、複数ライト、正二十面体を配置したシーンの基盤を作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// メインオブジェクト: 正二十面体
+const geometry = new THREE.___(1.2, 1);
+const material = new THREE.MeshStandardMaterial({
+  color: 0x7C3AED,
+  roughness: 0.15,
+  metalness: 0.85,
+});
+const ico = new THREE.Mesh(geometry, material);
+scene.add(ico);
+
+// グリッドヘルパーを追加
+const grid = new THREE.___Helper(20, 20, 0x4338CA, 0x312E81);
+grid.position.y = -2;
+scene.add(grid);
+
+// ライティング（3つのライトで立体感を出す）
+scene.add(new THREE.AmbientLight(0xffffff, ___));
+const mainLight = new THREE.DirectionalLight(0xF8FAFC, 0.8);
+mainLight.position.set(5, 5, 5);
+scene.add(mainLight);
+const fillLight = new THREE.DirectionalLight(0x93C5FD, 0.3);
+fillLight.position.set(-3, 3, -3);
+scene.add(fillLight);
+
+camera.position.set(5, 3, 5);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.IcosahedronGeometry(1.2, 1);
+const material = new THREE.MeshStandardMaterial({
+  color: 0x7C3AED,
+  roughness: 0.15,
+  metalness: 0.85,
+});
+const ico = new THREE.Mesh(geometry, material);
+scene.add(ico);
+
+const grid = new THREE.GridHelper(20, 20, 0x4338CA, 0x312E81);
+grid.position.y = -2;
+scene.add(grid);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+const mainLight = new THREE.DirectionalLight(0xF8FAFC, 0.8);
+mainLight.position.set(5, 5, 5);
+scene.add(mainLight);
+const fillLight = new THREE.DirectionalLight(0x93C5FD, 0.3);
+fillLight.position.set(-3, 3, -3);
+scene.add(fillLight);
+
+camera.position.set(5, 3, 5);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['IcosahedronGeometry(', 'GridHelper(', 'AmbientLight(']}
+          hints={[
+            '正二十面体は IcosahedronGeometry(半径, detail) で作成',
+            'グリッドは GridHelper(サイズ, 分割数, 色1, 色2) で作成',
+            'AmbientLight の第2引数は強度です（0.3 程度が適切）',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

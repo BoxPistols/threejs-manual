@@ -9,6 +9,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // シンプルなノイズ関数（手続き的な地形生成用）
 function pseudoNoise(x: number, z: number): number {
@@ -388,6 +389,87 @@ function Cloud({ position, scale }: {
 
 // 霧を追加して遠方をフェードアウト
 <fog attach="fog" args={["#87CEEB", 15, 40]} />`}
+        />
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="空と地面のシーンを作ろう"
+          description="球体の内側で空を表現し、PlaneGeometry で地面を配置するシーンを作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// 空の球体（内側をレンダリング）
+const skyGeo = new THREE.SphereGeometry(50, 32, 16);
+const skyMat = new THREE.MeshBasicMaterial({
+  color: 0x87CEEB,
+  side: THREE.___,  // 内側をレンダリング
+});
+const sky = new THREE.Mesh(skyGeo, skyMat);
+scene.add(sky);
+
+// 地面
+const groundGeo = new THREE.___(30, 30);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x2D5A27,
+  roughness: 0.9,
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -1;
+scene.add(ground);
+
+// ライティング
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const sun = new THREE.DirectionalLight(0xFFF8E1, 1.0);
+sun.position.set(10, 15, 5);
+scene.add(sun);
+
+camera.position.set(12, 8, 12);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const skyGeo = new THREE.SphereGeometry(50, 32, 16);
+const skyMat = new THREE.MeshBasicMaterial({
+  color: 0x87CEEB,
+  side: THREE.BackSide,
+});
+const sky = new THREE.Mesh(skyGeo, skyMat);
+scene.add(sky);
+
+const groundGeo = new THREE.PlaneGeometry(30, 30);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x2D5A27,
+  roughness: 0.9,
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -1;
+scene.add(ground);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const sun = new THREE.DirectionalLight(0xFFF8E1, 1.0);
+sun.position.set(10, 15, 5);
+scene.add(sun);
+
+camera.position.set(12, 8, 12);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['BackSide', 'PlaneGeometry(']}
+          hints={[
+            'THREE.BackSide を使うと球体の内側がレンダリングされます',
+            '地面は PlaneGeometry(幅, 奥行き) で作成します',
+            '地面は rotation.x = -Math.PI / 2 で水平に配置します',
+          ]}
+          preview
         />
       </div>
 

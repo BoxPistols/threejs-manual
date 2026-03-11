@@ -7,6 +7,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function CameraPage() {
   const [fov, setFov] = useState(75);
@@ -177,6 +178,52 @@ camera.position.set(3, 3, 3);
 
 // 原点（0, 0, 0）を見る
 camera.lookAt(0, 0, 0);`}
+        />
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="カメラの位置を調整してみよう"
+          description="PerspectiveCameraの位置とlookAtを変更して、立方体を斜めから見るようにしてください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// カメラの位置を設定（x: 3, y: 2, z: 5 に移動）
+camera.position.set(___, ___, ___);
+// カメラの視点を原点に向ける
+camera.lookAt(___, ___, ___);
+
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.set(3, 2, 5);
+camera.lookAt(0, 0, 0);
+
+renderer.render(scene, camera);`}
+          keywords={['position.set(', 'lookAt(']}
+          hints={[
+            'camera.position.set(x, y, z) でカメラの位置を設定',
+            'camera.lookAt(x, y, z) でカメラの注視点を設定',
+            '原点は (0, 0, 0) です',
+          ]}
+          preview
         />
       </div>
 

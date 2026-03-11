@@ -8,6 +8,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 飛行機モデル（プリミティブ）
 function AirplaneModel() {
@@ -484,6 +485,129 @@ function GameScreen() {
     </div>
   );
 }`}
+        />
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="距離ベースの当たり判定を実装しよう"
+          description="2つのオブジェクト間の距離を計算し、チェックポイント通過判定を実装してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(10, 10));
+
+// 移動するプレイヤー
+const player = new THREE.Mesh(
+  new THREE.SphereGeometry(0.2, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+scene.add(player);
+
+// チェックポイント（リング）
+const checkpoint = new THREE.Mesh(
+  new THREE.TorusGeometry(0.8, 0.05, 8, 32),
+  new THREE.MeshStandardMaterial({ color: 0xF59E0B, emissive: 0xF59E0B, emissiveIntensity: 0.3 })
+);
+checkpoint.position.set(3, 0.5, 0);
+scene.add(checkpoint);
+
+camera.position.set(5, 4, 5);
+camera.lookAt(0, 0, 0);
+
+let score = 0;
+let passed = false;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = performance.now() * 0.001;
+
+  // プレイヤーを移動
+  player.position.x = Math.cos(t) * 3;
+  player.position.z = Math.sin(t) * 3;
+  player.position.y = 0.5;
+
+  // 当たり判定: 2点間の距離を計算
+  const dx = player.position.x - checkpoint.position.x;
+  const dy = player.position.y - checkpoint.position.y;
+  const dz = player.position.z - checkpoint.position.z;
+  const distance = Math.___(dx * dx + dy * dy + dz * dz);
+
+  // 距離が閾値以下なら通過
+  if (!passed && distance < ___) {
+    passed = true;
+    score += 100;
+    checkpoint.material.color.setHex(0x10B981);
+    checkpoint.material.emissive.setHex(0x10B981);
+  }
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.GridHelper(10, 10));
+
+const player = new THREE.Mesh(
+  new THREE.SphereGeometry(0.2, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0x4F46E5 })
+);
+scene.add(player);
+
+const checkpoint = new THREE.Mesh(
+  new THREE.TorusGeometry(0.8, 0.05, 8, 32),
+  new THREE.MeshStandardMaterial({ color: 0xF59E0B, emissive: 0xF59E0B, emissiveIntensity: 0.3 })
+);
+checkpoint.position.set(3, 0.5, 0);
+scene.add(checkpoint);
+
+camera.position.set(5, 4, 5);
+camera.lookAt(0, 0, 0);
+
+let score = 0;
+let passed = false;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = performance.now() * 0.001;
+
+  player.position.x = Math.cos(t) * 3;
+  player.position.z = Math.sin(t) * 3;
+  player.position.y = 0.5;
+
+  const dx = player.position.x - checkpoint.position.x;
+  const dy = player.position.y - checkpoint.position.y;
+  const dz = player.position.z - checkpoint.position.z;
+  const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+  if (!passed && distance < 1.2) {
+    passed = true;
+    score += 100;
+    checkpoint.material.color.setHex(0x10B981);
+    checkpoint.material.emissive.setHex(0x10B981);
+  }
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          keywords={['sqrt(', 'distance', '1.2']}
+          hints={[
+            'Math.sqrt() で平方根を計算して距離を求めます',
+            '3D空間の距離 = sqrt(dx^2 + dy^2 + dz^2)',
+            'チェックポイントのリング半径が0.8なので、閾値は1.2程度が適切',
+          ]}
+          preview
         />
       </div>
 

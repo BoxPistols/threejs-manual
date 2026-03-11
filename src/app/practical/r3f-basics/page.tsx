@@ -8,6 +8,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 回転するトーラスノット
 function RotatingKnot() {
@@ -221,6 +222,72 @@ function RotatingKnot() {
             つまり、Three.js で使えるすべてのクラスが小文字キャメルケースの JSX 要素として利用可能です。
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="バニラ Three.js で回転するボックスを作ろう"
+          description="requestAnimationFrame を使って立方体を回転させるアニメーションを実装してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshStandardMaterial({ color: 0x6366F1 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.AmbientLight(0x404040));
+
+camera.position.z = 3;
+
+// アニメーションループ
+function animate() {
+  ___(animate);
+
+  // 毎フレーム回転させる
+  cube.rotation.___ += 0.01;
+  cube.rotation.___ += 0.01;
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshStandardMaterial({ color: 0x6366F1 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+scene.add(new THREE.DirectionalLight(0xffffff, 1));
+scene.add(new THREE.AmbientLight(0x404040));
+
+camera.position.z = 3;
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene, camera);
+}
+animate();`}
+          keywords={['requestAnimationFrame(', 'rotation.x', 'rotation.y']}
+          hints={[
+            'requestAnimationFrame(animate) で次のフレームを予約します',
+            'cube.rotation.x と cube.rotation.y で回転を制御します',
+            '毎フレーム少しずつ値を加算すると滑らかな回転になります',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

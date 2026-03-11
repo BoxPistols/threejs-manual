@@ -9,6 +9,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 飛行機モデル（プリミティブで構成）
 function AirplaneModel({
@@ -306,6 +307,91 @@ function AircraftController() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="プリミティブで飛行機を組み立てよう"
+          description="円柱（胴体）、箱（主翼）、コーン（ノーズ）を組み合わせて簡易飛行機モデルを作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5);
+scene.add(light);
+
+// 胴体 - 横向きの円柱
+const bodyGeo = new THREE.___(0.15, 0.12, 1.4, 8);
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const body = new THREE.Mesh(bodyGeo, bodyMat);
+body.rotation.z = Math.PI / 2;
+scene.add(body);
+
+// 主翼 - 薄い箱
+const wingGeo = new THREE.___(2.0, 0.04, 0.4);
+const wingMat = new THREE.MeshStandardMaterial({ color: 0x818CF8 });
+const wing = new THREE.Mesh(wingGeo, wingMat);
+scene.add(wing);
+
+// ノーズコーン
+const noseGeo = new THREE.___(0.12, 0.3, 8);
+const noseMat = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const nose = new THREE.Mesh(noseGeo, noseMat);
+nose.position.set(0, 0, 0.8);
+nose.rotation.x = Math.PI / 2;
+scene.add(nose);
+
+scene.add(new THREE.GridHelper(8, 8));
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5);
+scene.add(light);
+
+const bodyGeo = new THREE.CylinderGeometry(0.15, 0.12, 1.4, 8);
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const body = new THREE.Mesh(bodyGeo, bodyMat);
+body.rotation.z = Math.PI / 2;
+scene.add(body);
+
+const wingGeo = new THREE.BoxGeometry(2.0, 0.04, 0.4);
+const wingMat = new THREE.MeshStandardMaterial({ color: 0x818CF8 });
+const wing = new THREE.Mesh(wingGeo, wingMat);
+scene.add(wing);
+
+const noseGeo = new THREE.ConeGeometry(0.12, 0.3, 8);
+const noseMat = new THREE.MeshStandardMaterial({ color: 0x4F46E5 });
+const nose = new THREE.Mesh(noseGeo, noseMat);
+nose.position.set(0, 0, 0.8);
+nose.rotation.x = Math.PI / 2;
+scene.add(nose);
+
+scene.add(new THREE.GridHelper(8, 8));
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['CylinderGeometry(', 'BoxGeometry(', 'ConeGeometry(']}
+          hints={[
+            '胴体は CylinderGeometry(上半径, 下半径, 高さ, セグメント) で作成',
+            '主翼は BoxGeometry(幅, 高さ, 奥行き) で薄い板状に',
+            'ノーズは ConeGeometry(半径, 高さ, セグメント) で作成',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-6">

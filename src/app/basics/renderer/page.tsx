@@ -5,6 +5,7 @@ import WhyNowBox from "@/components/WhyNowBox";
 import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
+import CodingChallenge from "@/components/CodingChallenge";
 
 export default function RendererPage() {
   return (
@@ -172,6 +173,61 @@ const renderer = new THREE.WebGLRenderer({ canvas });`}
             で上限を 2 に制限するのが一般的です。
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="レンダラーをセットアップしよう"
+          description="WebGLRendererを作成し、アンチエイリアスを有効にして球体を描画してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+// レンダラーを作成（アンチエイリアスを有効に）
+const renderer = new THREE.WebGLRenderer({ ___: true });
+
+// 描画サイズをウィンドウに合わせる
+renderer.___(window.innerWidth, window.innerHeight);
+
+// ピクセル比を設定
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// canvas を DOM に追加
+document.body.appendChild(renderer.___);
+
+// 球体を作成
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.z = 3;
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+document.body.appendChild(renderer.domElement);
+
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.z = 3;
+renderer.render(scene, camera);`}
+          keywords={['antialias', 'setSize(', 'domElement']}
+          hints={[
+            'アンチエイリアスは antialias: true で有効にします',
+            'renderer.setSize(width, height) でキャンバスサイズを設定',
+            'renderer.domElement が canvas 要素です',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

@@ -10,6 +10,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // 発光する球体
 function GlowingSphere({ intensity }: { intensity: number }) {
@@ -325,6 +326,83 @@ function Scene() {
             </li>
           </ul>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="発光する球体を作ろう"
+          description="emissive マテリアルを使って自己発光する球体を作成してください。Bloom エフェクトの素材になる発光オブジェクトです。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x202020));
+scene.add(new THREE.DirectionalLight(0xffffff, 0.5));
+
+// 発光する球体を作成
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshStandardMaterial({
+  color: 0x4F46E5,
+  ___: 0x4F46E5,         // 自己発光色
+  ___: 2.0,              // 発光の強さ
+  roughness: 0.1,
+  metalness: 0.3,
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// 床を追加
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  new THREE.MeshStandardMaterial({ color: 0x1a1a2e })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -1.5;
+scene.add(floor);
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x202020));
+scene.add(new THREE.DirectionalLight(0xffffff, 0.5));
+
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshStandardMaterial({
+  color: 0x4F46E5,
+  emissive: 0x4F46E5,
+  emissiveIntensity: 2.0,
+  roughness: 0.1,
+  metalness: 0.3,
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  new THREE.MeshStandardMaterial({ color: 0x1a1a2e })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -1.5;
+scene.add(floor);
+
+camera.position.set(3, 2, 3);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['emissive', 'emissiveIntensity']}
+          hints={[
+            'emissive プロパティで自己発光色を設定します',
+            'emissiveIntensity で発光の強さを制御します（1以上で明るく光る）',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">

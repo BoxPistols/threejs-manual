@@ -10,6 +10,7 @@ import InfoBox from "@/components/InfoBox";
 import CodeBlock from "@/components/CodeBlock";
 import ThreePreview from "@/components/ThreePreview";
 import ParameterSlider from "@/components/ParameterSlider";
+import CodingChallenge from "@/components/CodingChallenge";
 
 // Float + MeshWobbleMaterial のデモ
 function WobblyTorus({
@@ -310,6 +311,73 @@ function WobblyTorus() {
             公式ドキュメント: <a href="https://github.com/pmndrs/drei" target="_blank" rel="noopener noreferrer" className="underline">github.com/pmndrs/drei</a>
           </p>
         </InfoBox>
+      </div>
+
+      <div className="mt-8">
+        <CodingChallenge
+          title="メタリックな球体シーンを作ろう"
+          description="MeshStandardMaterial の metalness と roughness を調整して、金属的な反射をする球体を作成してください。"
+          initialCode={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// ライティング
+scene.add(new THREE.AmbientLight(0x404040));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(5, 5, 5);
+scene.add(dirLight);
+const backLight = new THREE.DirectionalLight(0x93C5FD, 0.3);
+backLight.position.set(-3, 3, -3);
+scene.add(backLight);
+
+// メタリックな球体を作成
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshStandardMaterial({
+  color: 0xC0C0C0,
+  ___: 0.9,       // 金属度（0=非金属, 1=金属）
+  ___: 0.1,       // 粗さ（0=鏡面, 1=粗い）
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.set(2, 1.5, 2);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          answer={`const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(5, 5, 5);
+scene.add(dirLight);
+const backLight = new THREE.DirectionalLight(0x93C5FD, 0.3);
+backLight.position.set(-3, 3, -3);
+scene.add(backLight);
+
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshStandardMaterial({
+  color: 0xC0C0C0,
+  metalness: 0.9,
+  roughness: 0.1,
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+camera.position.set(2, 1.5, 2);
+camera.lookAt(0, 0, 0);
+renderer.render(scene, camera);`}
+          keywords={['metalness', 'roughness']}
+          hints={[
+            'metalness で金属度を設定します（0=非金属、1=完全な金属）',
+            'roughness で表面の粗さを設定します（0=鏡面、1=粗い）',
+          ]}
+          preview
+        />
       </div>
 
       <div className="mt-8">
