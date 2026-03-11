@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Code2, CheckCircle2, Lightbulb, RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { buildThreePreviewHtml } from '@/lib/preview';
+import { useThemeContext } from '@/contexts/ThemeContext';
 
 interface CodingChallengeProps {
   title: string;
@@ -33,14 +34,16 @@ export default function CodingChallenge({ title, description, initialCode, answe
   const [hintIndex, setHintIndex] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [previewHtml, setPreviewHtml] = useState('');
+  const { theme } = useThemeContext();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (!preview) return;
     const timer = setTimeout(() => {
-      setPreviewHtml(buildThreePreviewHtml(code));
+      setPreviewHtml(buildThreePreviewHtml(code, isDark));
     }, 400);
     return () => clearTimeout(timer);
-  }, [code, preview]);
+  }, [code, preview, isDark]);
 
   const blobUrl = useMemo(() => {
     if (!previewHtml) return '';
@@ -93,12 +96,12 @@ export default function CodingChallenge({ title, description, initialCode, answe
               }}
               spellCheck={false}
               wrap="off"
-              className="w-full p-4 font-mono text-sm leading-relaxed bg-transparent text-[#cdd6f4] resize-none focus:outline-none min-h-[160px] overflow-auto whitespace-pre"
+              className="w-full py-4 px-5 font-mono text-sm leading-relaxed bg-transparent text-[#cdd6f4] resize-none focus:outline-none min-h-[160px] overflow-auto whitespace-pre"
               rows={Math.max(6, code.split('\n').length + 1)}
             />
           </div>
-          <div className="relative bg-gray-900 rounded-lg overflow-hidden" style={{ minHeight: '300px' }}>
-            <div className="absolute top-2 right-2 text-xs text-gray-500 z-10">プレビュー</div>
+          <div className={`relative rounded-lg overflow-hidden ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`} style={{ minHeight: '300px' }}>
+            <div className={`absolute top-2 right-2 text-xs z-10 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>プレビュー</div>
             {blobUrl && (
               <iframe
                 src={blobUrl}
@@ -123,7 +126,7 @@ export default function CodingChallenge({ title, description, initialCode, answe
             }}
             spellCheck={false}
             wrap="off"
-            className="w-full p-4 font-mono text-sm leading-relaxed bg-transparent text-[#cdd6f4] resize-none focus:outline-none min-h-[160px] overflow-auto whitespace-pre"
+            className="w-full py-4 px-5 font-mono text-sm leading-relaxed bg-transparent text-[#cdd6f4] resize-none focus:outline-none min-h-[160px] overflow-auto whitespace-pre"
             rows={Math.max(6, code.split('\n').length + 1)}
           />
         </div>

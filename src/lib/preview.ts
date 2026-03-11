@@ -1,9 +1,10 @@
 /**
  * Three.js コードをプレビュー用HTMLに変換する
  */
-export function buildThreePreviewHtml(code: string): string {
+export function buildThreePreviewHtml(code: string, isDark: boolean = true): string {
   // ユーザーコードの穴埋め部分(___) を空文字に置換して実行エラーを軽減
   const safeCode = code.replace(/___/g, "''");
+  const bgColor = isDark ? '#1a1a2e' : '#e8e8f0';
 
   return `<!DOCTYPE html>
 <html>
@@ -11,7 +12,7 @@ export function buildThreePreviewHtml(code: string): string {
 <meta charset="utf-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #1a1a2e; overflow: hidden; }
+  body { background: ${bgColor}; overflow: hidden; }
   canvas { display: block; width: 100%; height: 100%; }
   #error { color: #ff6b6b; font-family: monospace; font-size: 13px; padding: 12px; white-space: pre-wrap; }
 </style>

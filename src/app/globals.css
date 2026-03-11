@@ -158,6 +158,22 @@
   100% { background-color: transparent; }
 }
 
+/* フォントサイズ設定 */
+html.font-small {
+  font-size: 14px;
+}
+html.font-medium {
+  font-size: 16px;
+}
+html.font-large {
+  font-size: 18px;
+}
+
+/* ワイドレイアウトモード */
+.layout-wide .max-w-4xl {
+  max-width: 80rem;
+}
+
 @layer components {
   .container {
     width: 100%;
