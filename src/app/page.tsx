@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard, Search, Monitor, Code } from "lucide-react";
+import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard, Search, Monitor, Code, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { modKey, navModKey } from "@/lib/keyLabels";
 import Link from "next/link";
@@ -132,7 +132,80 @@ export default function Home() {
           <h2 className="text-3xl font-poppins font-bold text-center text-foreground mb-12">
             このガイドの使い方
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* コーディングチャレンジ（フル幅カード） */}
+          <div className="bg-background border border-border rounded-xl p-6 md:p-8 hover:shadow-md transition-shadow mb-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                <Code className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">
+                コーディングチャレンジ（インタラクティブエディタ）の使い方
+              </h3>
+            </div>
+
+            <div className="space-y-4 text-sm text-muted-foreground">
+              <p className="leading-relaxed">
+                各ページの末尾にインタラクティブなコードエディタがあります。
+                <span className="font-medium text-foreground">左側がコード入力エリア</span>、
+                <span className="font-medium text-foreground">右側が Three.js 3D プレビュー</span>です。
+                コードは直接編集でき、変更すると 3D プレビューが自動的に更新されます（400ms のデバウンス付き）。
+              </p>
+
+              <div>
+                <p className="font-medium text-foreground mb-3">ボタンの説明</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex items-start gap-3 bg-muted/50 rounded-lg p-3">
+                    <div className="flex items-center justify-center shrink-0 h-8 w-8 rounded-md bg-green-600 text-white">
+                      <CheckCircle2 className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">チェック</p>
+                      <p className="text-xs mt-0.5">コードを採点します。キーワードベースの緩い判定なので、完全一致は不要です。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-muted/50 rounded-lg p-3">
+                    <div className="flex items-center justify-center shrink-0 h-8 w-8 rounded-md border border-amber-500 text-amber-500">
+                      <Lightbulb className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">ヒント</p>
+                      <p className="text-xs mt-0.5">段階的にヒントを表示します。「次のヒント」ボタンで順番に確認できます。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-muted/50 rounded-lg p-3">
+                    <div className="flex items-center justify-center shrink-0 h-8 w-8 rounded-md border border-border text-foreground">
+                      <Eye className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">模範解答</p>
+                      <p className="text-xs mt-0.5">模範解答コードの表示 / 非表示を切り替えます。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-muted/50 rounded-lg p-3">
+                    <div className="flex items-center justify-center shrink-0 h-8 w-8 rounded-md border border-border text-foreground">
+                      <RotateCcw className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">リセット</p>
+                      <p className="text-xs mt-0.5">コード・採点結果・ヒントをすべて初期状態に戻します。</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mt-2">
+                <Keyboard className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <span className="font-medium">エディタ内ショートカット:</span>{" "}
+                  <kbd className="px-1 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 font-mono text-[11px]">Tab</kbd>{" "}
+                  でインデント挿入。コードは横スクロール対応。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* キーボードショートカット */}
             <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-4">
@@ -205,28 +278,6 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">
                 ダークモード / ライトモードの切替に対応しています。ヘッダーのテーマ切替ボタンからお好みの表示に変更できます。
               </p>
-            </div>
-
-            {/* コーディングチャレンジの使い方 */}
-            <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400">
-                  <Code className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  コーディングチャレンジの使い方
-                </h3>
-              </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>各ページにインタラクティブな Three.js コードエディターがあります</li>
-                <li>左側にコード入力、右側に3Dプレビューがリアルタイム表示</li>
-                <li>
-                  <span className="font-medium text-foreground">チェック</span>で採点、
-                  <span className="font-medium text-foreground">ヒント</span>で段階的にヒント表示、
-                  <span className="font-medium text-foreground">模範解答</span>で正解コード確認、
-                  <span className="font-medium text-foreground">リセット</span>で初期状態に戻せます
-                </li>
-              </ul>
             </div>
           </div>
         </div>
