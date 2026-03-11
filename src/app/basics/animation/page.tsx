@@ -218,7 +218,21 @@ function animate() {
         <CodingChallenge
           title="アニメーションループを完成させよう"
           description="THREE.Clock を使って、立方体を時間ベースで回転させるアニメーションループを書いてください。X軸とY軸の両方を回転させましょう。"
-          initialCode={`const clock = new THREE.___();
+          preview
+          initialCode={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 3;
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+const clock = new THREE.___();
 
 function animate() {
   requestAnimationFrame(___);
@@ -232,7 +246,20 @@ function animate() {
 }
 
 animate();`}
-          answer={`const clock = new THREE.Clock();
+          answer={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 3;
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);

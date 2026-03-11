@@ -242,8 +242,32 @@ function animate() {
         <CodingChallenge
           title="Raycaster を使ったクリック検出"
           description="Raycaster を作成し、マウスクリックで 3D オブジェクトの色を赤に変更するコードの空欄を埋めてください。"
-          initialCode={`const raycaster = new THREE.___();
+          preview
+          initialCode={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 5;
+
+// ボックスを3つ配置
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+for (let i = -1; i <= 1; i++) {
+  const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+  const box = new THREE.Mesh(geometry, material);
+  box.position.x = i * 2;
+  scene.add(box);
+}
+renderer.render(scene, camera);
+
+const raycaster = new THREE.___();
 const mouse = new THREE.___();
+
+window.addEventListener('mousemove', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
 
 window.addEventListener('click', () => {
   raycaster.___(mouse, camera);
@@ -253,10 +277,34 @@ window.addEventListener('click', () => {
   if (intersects.length > 0) {
     const obj = intersects[0].object;
     obj.material.color.set(0xff0000);
+    renderer.render(scene, camera);
   }
 });`}
-          answer={`const raycaster = new THREE.Raycaster();
+          answer={`// シーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 5;
+
+// ボックスを3つ配置
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+for (let i = -1; i <= 1; i++) {
+  const material = new THREE.MeshBasicMaterial({ color: 0x4F46E5 });
+  const box = new THREE.Mesh(geometry, material);
+  box.position.x = i * 2;
+  scene.add(box);
+}
+renderer.render(scene, camera);
+
+const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+
+window.addEventListener('mousemove', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
 
 window.addEventListener('click', () => {
   raycaster.setFromCamera(mouse, camera);
@@ -266,6 +314,7 @@ window.addEventListener('click', () => {
   if (intersects.length > 0) {
     const obj = intersects[0].object;
     obj.material.color.set(0xff0000);
+    renderer.render(scene, camera);
   }
 });`}
           hints={[

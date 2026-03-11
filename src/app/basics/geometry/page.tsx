@@ -179,8 +179,17 @@ scene.add(cube);`}
       <div className="mt-8">
         <CodingChallenge
           title="球体ジオメトリを作ろう"
-          description="SphereGeometry を使って、半径 1.5、横分割 32、縦分割 32 の球体メッシュを作成してください。マテリアルは MeshStandardMaterial を使い、色は自由に設定して構いません。"
-          initialCode={`// 球体のジオメトリを作成
+          description="SphereGeometry を使って、半径 1.5、横分割 32、縦分割 32 の球体メッシュを作成してください。マテリアルは MeshBasicMaterial を使い、色は自由に設定して構いません。"
+          preview
+          initialCode={`// レンダラーとシーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 4;
+
+// 球体のジオメトリを作成
 const geometry = new THREE.___(___);
 
 // マテリアルを作成
@@ -188,22 +197,34 @@ const material = new THREE.___({ color: ___ });
 
 // メッシュを作成してシーンに追加
 const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);`}
-          answer={`// 球体のジオメトリを作成
+scene.add(sphere);
+
+renderer.render(scene, camera);`}
+          answer={`// レンダラーとシーンのセットアップ
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+camera.position.z = 4;
+
+// 球体のジオメトリを作成
 const geometry = new THREE.SphereGeometry(1.5, 32, 32);
 
 // マテリアルを作成
-const material = new THREE.MeshStandardMaterial({ color: 0x7C3AED });
+const material = new THREE.MeshBasicMaterial({ color: 0x7C3AED });
 
 // メッシュを作成してシーンに追加
 const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);`}
+scene.add(sphere);
+
+renderer.render(scene, camera);`}
           hints={[
             '球体は THREE.SphereGeometry(半径, 横分割数, 縦分割数) で作成します',
-            'MeshStandardMaterial はライティングに対応したマテリアルです',
+            'MeshBasicMaterial はライティングなしでも色が見えるマテリアルです',
             'SphereGeometry(1.5, 32, 32) で半径 1.5 の球体ができます',
           ]}
-          keywords={['SphereGeometry(1.5, 32, 32)', 'MeshStandardMaterial']}
+          keywords={['SphereGeometry(1.5, 32, 32)', 'MeshBasicMaterial']}
         />
       </div>
 

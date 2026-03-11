@@ -163,6 +163,7 @@ renderer.render(scene, camera);`}
         <CodingChallenge
           title="基本のシーンを書いてみよう"
           description="Scene、Camera、Renderer を作成し、立方体を表示するコードの空欄を埋めてください。"
+          preview
           initialCode={`// 1. シーンを作成
 const scene = new THREE.___();
 
@@ -173,6 +174,8 @@ const camera = new THREE.___(
 
 // 3. レンダラーを作成
 const renderer = new THREE.___();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
 // 4. 立方体を作成
 const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -195,6 +198,8 @@ const camera = new THREE.PerspectiveCamera(
 
 // 3. レンダラーを作成
 const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
 // 4. 立方体を作成
 const geometry = new THREE.BoxGeometry(1, 1, 1);
