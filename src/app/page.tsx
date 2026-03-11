@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard } from "lucide-react";
+import { ArrowRight, Zap, Users, CheckCircle2, Eye, Box, Lightbulb, Layers, Palette, Rocket, Keyboard, Search, Monitor, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { modKey, navModKey } from "@/lib/keyLabels";
 import Link from "next/link";
@@ -122,6 +122,112 @@ export default function Home() {
               <span className="font-semibold text-foreground">総学習時間：</span>
               約 5 時間 20 分
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* このガイドの使い方 */}
+      <section className="py-16 px-4 md:px-8 bg-card">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-poppins font-bold text-center text-foreground mb-12">
+            このガイドの使い方
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* キーボードショートカット */}
+            <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary">
+                  <Keyboard className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  キーボードショートカット
+                </h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <kbd className="shrink-0 px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono text-foreground">
+                    {navModKey(isMac)}+←→
+                  </kbd>
+                  <span>前後のページに移動</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <kbd className="shrink-0 px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono text-foreground">
+                    Shift+{navModKey(isMac)}+←→
+                  </kbd>
+                  <span>前後のセクションに移動</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <kbd className="shrink-0 px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono text-foreground">
+                    {modKey(isMac)}+K
+                  </kbd>
+                  <span>検索にフォーカス</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <kbd className="shrink-0 px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono text-foreground">
+                    Home
+                  </kbd>
+                  <span>ページトップにスクロール</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* キーワード検索 */}
+            <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-secondary/10 text-secondary">
+                  <Search className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  キーワード検索
+                </h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>サイドバーの検索欄にキーワードを入力</li>
+                <li>ページタイトルだけでなく、H2見出しのキーワードでも検索可能</li>
+                <li>
+                  検索結果の
+                  <span className="font-mono text-foreground">#</span>
+                  付きサブアイテムをクリックで該当箇所にスクロール＆ハイライト
+                </li>
+              </ul>
+            </div>
+
+            {/* 画面設定 */}
+            <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-accent/10 text-accent-foreground">
+                  <Monitor className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  画面設定
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                ダークモード / ライトモードの切替に対応しています。ヘッダーのテーマ切替ボタンからお好みの表示に変更できます。
+              </p>
+            </div>
+
+            {/* コーディングチャレンジの使い方 */}
+            <div className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                  <Code className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  コーディングチャレンジの使い方
+                </h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>各ページにインタラクティブな Three.js コードエディターがあります</li>
+                <li>左側にコード入力、右側に3Dプレビューがリアルタイム表示</li>
+                <li>
+                  <span className="font-medium text-foreground">チェック</span>で採点、
+                  <span className="font-medium text-foreground">ヒント</span>で段階的にヒント表示、
+                  <span className="font-medium text-foreground">模範解答</span>で正解コード確認、
+                  <span className="font-medium text-foreground">リセット</span>で初期状態に戻せます
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
