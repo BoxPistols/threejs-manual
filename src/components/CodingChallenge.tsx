@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Code2, CheckCircle2, Lightbulb, RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { buildThreePreviewHtml } from '@/lib/preview';
 import { useThemeContext } from '@/contexts/ThemeContext';
@@ -14,7 +14,7 @@ interface CodingChallengeProps {
   preview?: boolean;
 }
 
-function fuzzyCheck(code: string, answer: string, keywords?: string[]): boolean {
+export function fuzzyCheck(code: string, answer: string, keywords?: string[]): boolean {
   const normalize = (s: string) => s.replace(/\s+/g, ' ').trim();
   const normalizedCode = normalize(code);
   const normalizedAnswer = normalize(answer);
@@ -34,8 +34,8 @@ export default function CodingChallenge({ title, description, initialCode, answe
   const [hintIndex, setHintIndex] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [previewHtml, setPreviewHtml] = useState('');
-  const { theme } = useThemeContext();
-  const isDark = theme === 'dark';
+  const { theme, mounted } = useThemeContext();
+  const isDark = mounted ? theme === 'dark' : true;
 
   useEffect(() => {
     if (!preview) return;
@@ -45,15 +45,6 @@ export default function CodingChallenge({ title, description, initialCode, answe
     return () => clearTimeout(timer);
   }, [code, preview, isDark]);
 
-  const blobUrl = useMemo(() => {
-    if (!previewHtml) return '';
-    const blob = new Blob([previewHtml], { type: 'text/html' });
-    return URL.createObjectURL(blob);
-  }, [previewHtml]);
-
-  useEffect(() => {
-    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl); };
-  }, [blobUrl]);
 
   const handleCheck = () => setIsCorrect(fuzzyCheck(code, answer, keywords));
   const handleNextHint = () => {
@@ -100,14 +91,14 @@ export default function CodingChallenge({ title, description, initialCode, answe
               rows={Math.max(6, code.split('\n').length + 1)}
             />
           </div>
-          <div className={`relative rounded-lg overflow-hidden ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`} style={{ minHeight: '300px' }}>
-            <div className={`absolute top-2 right-2 text-xs z-10 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>プレビュー</div>
-            {blobUrl && (
+          <div className="relative rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900" style={{ minHeight: '300px' }}>
+            <div className="absolute top-2 right-2 text-xs z-10 text-gray-400 dark:text-gray-500">プレビュー</div>
+            {previewHtml && (
               <iframe
-                src={blobUrl}
+                srcDoc={previewHtml}
                 className="w-full h-full border-0"
                 style={{ minHeight: '300px' }}
-                sandbox="allow-scripts"
+                sandbox="allow-scripts allow-same-origin"
                 title="Three.js プレビュー"
               />
             )}

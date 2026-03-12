@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useTheme as useNextTheme } from 'next-themes';
 
 type ThemeMode = 'system' | 'light' | 'dark';
@@ -9,12 +9,16 @@ interface ThemeContextType {
   mode: ThemeMode;
   setMode: (mode: ThemeMode) => void;
   toggleTheme: () => void;
+  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeContextProvider({ children }: { children: React.ReactNode }) {
   const { theme, setTheme, resolvedTheme } = useNextTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const mode = (theme as ThemeMode) || 'system';
   const resolved = (resolvedTheme as 'light' | 'dark') || 'light';
@@ -28,7 +32,7 @@ export function ThemeContextProvider({ children }: { children: React.ReactNode }
   };
 
   return (
-    <ThemeContext.Provider value={{ theme: resolved, mode, setMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: resolved, mode, setMode, toggleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );

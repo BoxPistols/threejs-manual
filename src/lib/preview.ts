@@ -16,16 +16,25 @@ export function buildThreePreviewHtml(code: string, isDark: boolean = true): str
   canvas { display: block; width: 100%; height: 100%; }
   #error { color: #ff6b6b; font-family: monospace; font-size: 13px; padding: 12px; white-space: pre-wrap; }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"><\/script>
 </head>
 <body>
 <div id="error"></div>
 <script>
-try {
-  ${safeCode}
-} catch(e) {
-  document.getElementById('error').textContent = e.message;
-}
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js';
+  s.onload = function() {
+    try {
+      ${safeCode}
+    } catch(e) {
+      document.getElementById('error').textContent = e.message;
+    }
+  };
+  s.onerror = function() {
+    document.getElementById('error').textContent = 'Three.js の読み込みに失敗しました';
+  };
+  document.head.appendChild(s);
+})();
 <\/script>
 </body>
 </html>`;
