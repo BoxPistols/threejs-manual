@@ -71,7 +71,7 @@ export default function Navigation() {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const { theme, toggleTheme } = useThemeContext();
+  const { theme, toggleTheme, mounted } = useThemeContext();
   const { bookmarks } = useBookmarks();
   const pathname = usePathname();
 
@@ -155,8 +155,8 @@ export default function Navigation() {
             onClick={toggleTheme}
             className="w-full flex items-center gap-2 px-4 py-2 mb-4 text-sm rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            <span>{theme === "dark" ? "ライトモード" : "ダークモード"}</span>
+            {mounted ? (theme === "dark" ? <Sun size={16} /> : <Moon size={16} />) : <div className="w-4 h-4" />}
+            <span>{mounted ? (theme === "dark" ? "ライトモード" : "ダークモード") : "テーマ"}</span>
           </button>
 
           {/* 検索結果 */}
