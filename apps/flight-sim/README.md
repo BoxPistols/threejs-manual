@@ -34,3 +34,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## ライセンス
+
+この `apps/flight-sim/` ディレクトリのコードは All rights reserved です（© Ito Atsushi / BoxPistols、全文は [LICENSE](./LICENSE)）。リポジトリの他の部分には適用されません。
+
+- GitHub 上での閲覧・参照は自由ですが、事前の書面による許可のない利用・複製・改変・再配布・転用・商用転載は禁止します。問い合わせは https://asagiri-design.carrd.co/ から
+- 第三者のコード・データ（依存ライブラリ、`create-next-app` のテンプレート由来のファイルなど）は、それぞれのライセンス・利用条件に従います
